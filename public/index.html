@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invisible Ink | Secure Steganography</title>
+    <title>Invisible Ink | Advanced Steganography</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     
@@ -59,56 +59,34 @@
         button:active { transform: translateY(1px); }
         .btn-reset:hover { background: rgba(0,0,0,0.1); color: var(--text-main); transform: none; box-shadow: none; }
 
-        .preview-wrapper { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; background: repeating-linear-gradient(45deg, rgba(255,255,255,0.5), rgba(255,255,255,0.5) 10px, rgba(0,0,0,0.02) 10px, rgba(0,0,0,0.02) 20px); border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; padding: 1rem; min-height: 350px; box-shadow: inset 0 5px 15px rgba(0,0,0,0.03); }
+        .preview-wrapper { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; background: repeating-linear-gradient(45deg, rgba(255,255,255,0.5), rgba(255,255,255,0.5) 10px, rgba(0,0,0,0.02) 10px, rgba(0,0,0,0.02) 20px); border: 1px solid rgba(0,0,0,0.05); border-radius: 16px; padding: 1rem; min-height: 350px; box-shadow: inset 0 5px 15px rgba(0,0,0,0.03); width: 100%;}
         canvas { max-width: 100%; border-radius: 8px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 4px solid white; }
+        audio { width: 100%; display: none; margin-top: 1rem; border-radius: 8px; }
+        .audio-visual { display: none; font-size: 4rem; color: #8E2DE2; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8;} 50% { transform: scale(1.1); opacity: 1;} 100% { transform: scale(1); opacity: 0.8;} }
+
         .empty-state { color: var(--text-muted); text-align: center; font-size: 0.95rem; letter-spacing: 1px; font-weight: 600; background: rgba(255,255,255,0.8); padding: 0.5rem 1.5rem; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
 
-        /* Main Dashboard Persistent Output */
         .output-console { margin-top: 1.5rem; padding: 1.5rem; background: rgba(255,255,255,0.9); border-left: 5px solid #8E2DE2; border-radius: 12px; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .output-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.5rem; font-weight: 800; }
+        .output-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.5rem; font-weight: 800; display: flex; align-items: center; justify-content: space-between;}
+        .tamper-badge { background: #10b981; color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; letter-spacing: 0.5px; }
         #mainDecodedOutput { color: var(--text-main); font-weight: 500; font-size: 1.1rem; word-wrap: break-word; line-height: 1.6; }
 
-        /* Modal Overlay Styles */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            z-index: 100; display: none; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 0.3s ease;
-        }
-        
-        .modal-console {
-            background: #0f172a; border: 1px solid #334155; border-radius: 16px; width: 90%; max-width: 600px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 198, 255, 0.2);
-            overflow: hidden; transform: translateY(20px); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .modal-header {
-            background: #1e293b; padding: 1rem 1.5rem; border-bottom: 1px solid #334155;
-            display: flex; justify-content: space-between; align-items: center; color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;
-        }
-
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-console { background: #0f172a; border: 1px solid #334155; border-radius: 16px; width: 90%; max-width: 600px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 198, 255, 0.2); overflow: hidden; transform: translateY(20px); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal-header { background: #1e293b; padding: 1rem 1.5rem; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
         .modal-body { padding: 2rem; font-family: monospace; font-size: 1.1rem; min-height: 250px; display: flex; flex-direction: column; }
-        
         .terminal-line { margin-bottom: 0.5rem; opacity: 0; transform: translateX(-10px); animation: typeLine 0.3s forwards; }
         @keyframes typeLine { to { opacity: 1; transform: translateX(0); } }
-
         .text-cyan { color: #00c6ff; font-weight: bold; }
         .text-muted { color: #64748b; }
         .text-red { color: #ef4444; font-weight: bold; }
         .text-purple { color: #c084fc; font-weight: bold; }
-
         .loading-bar-container { width: 100%; height: 4px; background: #334155; border-radius: 2px; margin: 1.5rem 0; overflow: hidden; display: none; }
         .loading-bar-fill { height: 100%; width: 0%; background: var(--gradient-primary); transition: width 2.5s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        .final-output-box {
-            margin-top: 1rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 8px; color: #f8fafc; font-size: 1.2rem; word-wrap: break-word; line-height: 1.5;
-        }
-
-        .btn-close-modal {
-            margin-top: auto; align-self: flex-end; padding: 0.75rem 2rem; background: transparent; border: 1px solid #475569; color: #cbd5e1; border-radius: 8px; display: none; transition: all 0.2s; cursor: pointer;
-        }
+        .final-output-box { margin-top: 1rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 8px; color: #f8fafc; font-size: 1.2rem; word-wrap: break-word; line-height: 1.5; }
+        .btn-close-modal { margin-top: auto; align-self: flex-end; padding: 0.75rem 2rem; background: transparent; border: 1px solid #475569; color: #cbd5e1; border-radius: 8px; display: none; transition: all 0.2s; cursor: pointer; }
         .btn-close-modal:hover { background: #334155; color: white; border-color: #64748b; }
-
         @media (max-width: 850px) { .dashboard { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -120,48 +98,53 @@
 
     <header>
         <h1>Invisible Ink</h1>
-        <p>Image Steganography Protocol</p>
+        <p>Multi-Modal Steganography & Integrity Protocol</p>
     </header>
 
     <div class="dashboard">
         <div class="panel panel-left">
-            <h2>⚙️ Steganography Controls</h2>
+            <h2>⚙️ Mission Parameters</h2>
             
             <div class="upload-zone">
-                <input type="file" id="imageUpload" accept="image/png, image/jpeg">
+                <input type="file" id="mediaUpload" accept="image/png, image/jpeg, audio/wav">
                 <div class="upload-content">
-                    <div class="upload-icon">⎘</div>
-                    <div id="fileNameDisplay" style="font-weight: 700; color: #0f172a;">Select Cover Image</div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted);">Drop PNG or JPG here</div>
+                    <div class="upload-icon" id="uploadIcon">⎘</div>
+                    <div id="fileNameDisplay" style="font-weight: 700; color: #0f172a;">Select Cover Asset</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">Drop PNG, JPG, or WAV here</div>
                 </div>
             </div>
             
-            <textarea id="secretMessage" placeholder="Enter the confidential message here..."></textarea>
+            <textarea id="secretMessage" placeholder="Enter the confidential payload here..."></textarea>
             
             <div class="key-group">
-                <input type="password" id="cryptoKey" placeholder="Encryption Key (Enter or Generate)">
+                <input type="password" id="cryptoKey" placeholder="AES-256 Key (Enter or Generate)">
                 <button class="btn-icon" onclick="toggleKeyVisibility()" title="Show/Hide Key">👁️</button>
                 <button class="btn-icon" onclick="generateSecureKey()" title="Generate Secure Key">🎲</button>
             </div>
             
             <div class="btn-group">
-                <button class="btn-encode" onclick="encodeMessage()">Embed Data</button>
-                <button class="btn-decode" onclick="startDecryptionSequence()">Extract Data</button>
-                <button id="downloadBtn" class="btn-download" onclick="downloadImage()" style="display: none;">⬇️ Download Encoded Image</button>
+                <button class="btn-encode" onclick="encodeMedia()">Embed Payload</button>
+                <button class="btn-decode" onclick="startDecryptionSequence()">Verify & Extract</button>
+                <button id="downloadBtn" class="btn-download" onclick="downloadMedia()" style="display: none;">⬇️ Download Secured Asset</button>
                 <button class="btn-reset" onclick="resetSession()">⟳ Reset Session</button>
             </div>
 
             <div class="output-console" id="mainOutputContainer">
-                <div class="output-label" id="mainOutputLabel">Decoded Message:</div>
+                <div class="output-label" id="mainOutputLabel">
+                    <span>Decrypted Payload:</span>
+                    <span class="tamper-badge" id="tamperBadge">SHA-256 VERIFIED</span>
+                </div>
                 <div id="mainDecodedOutput"></div>
             </div>
         </div>
 
         <div class="panel panel-right">
-            <h2>👁️ Image Preview</h2>
+            <h2>👁️ Asset Inspector</h2>
             <div class="preview-wrapper" id="previewContainer">
-                <div class="empty-state" id="placeholderText">[ WAITING FOR IMAGE INPUT ]</div>
+                <div class="empty-state" id="placeholderText">[ WAITING FOR ASSET INPUT ]</div>
                 <canvas id="canvas"></canvas>
+                <div class="audio-visual" id="audioVisual">🎧</div>
+                <audio id="audioPlayer" controls></audio>
             </div>
         </div>
     </div>
@@ -169,29 +152,41 @@
     <div class="modal-overlay" id="decryptModal">
         <div class="modal-console" id="modalConsole">
             <div class="modal-header">
-                <span>Terminal // Decryption Engine</span>
-                <span style="color: #00c6ff;">v2.4.0</span>
+                <span>Terminal // Advanced Decryption Engine</span>
+                <span style="color: #00c6ff;">v3.0.0</span>
             </div>
             <div class="modal-body">
                 <div id="terminalLines"></div>
-                
-                <div class="loading-bar-container" id="loadingBarContainer">
-                    <div class="loading-bar-fill" id="loadingBarFill"></div>
-                </div>
-
+                <div class="loading-bar-container" id="loadingBarContainer"><div class="loading-bar-fill" id="loadingBarFill"></div></div>
                 <div id="finalResultArea"></div>
-                
                 <button class="btn-close-modal" id="closeModalBtn" onclick="closeModal()">Close Terminal</button>
             </div>
         </div>
     </div>
 
     <script>
+        // Global State Variables to handle both Image and Audio modes
+        let currentMediaType = null; // 'image' or 'audio'
+        let rawAudioBuffer = null;
+        let modifiedAudioBlob = null;
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let img = new Image();
 
-        document.getElementById('imageUpload').addEventListener('change', function(e) {
+        // --- BACKEND LOGGING FUNCTION (From Phase 3) ---
+        async function logActivityToServer(actionType) {
+            const fileName = document.getElementById('fileNameDisplay').innerText;
+            try {
+                await fetch('/api/audit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: actionType, filename: fileName, timestamp: new Date().toISOString() })
+                });
+            } catch (error) { console.log("Local mode: Server logging skipped."); }
+        }
+
+        // --- SMART UPLOAD HANDLER ---
+        document.getElementById('mediaUpload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
 
@@ -199,23 +194,51 @@
             document.getElementById('fileNameDisplay').style.color = '#0072ff';
             document.getElementById('placeholderText').style.display = 'none';
 
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                img.onload = function() {
-                    const maxWidth = document.getElementById('previewContainer').clientWidth - 32;
-                    let scale = 1;
-                    if (img.width > maxWidth) scale = maxWidth / img.width;
-                    
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    ctx.drawImage(img, 0, 0);
-                    
-                    canvas.style.display = 'block';
-                    canvas.style.width = (img.width * scale) + 'px';
+            // Check if it's Audio or Image
+            if (file.type.startsWith('audio/') || file.name.toLowerCase().endsWith('.wav')) {
+                currentMediaType = 'audio';
+                document.getElementById('uploadIcon').innerText = '🎵';
+                
+                // Hide Canvas, Show Audio Player
+                canvas.style.display = 'none';
+                document.getElementById('audioVisual').style.display = 'block';
+                const audioPlayer = document.getElementById('audioPlayer');
+                audioPlayer.style.display = 'block';
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    rawAudioBuffer = event.target.result;
+                    // Create a blob URL to play the unedited audio immediately
+                    const blob = new Blob([rawAudioBuffer], { type: 'audio/wav' });
+                    audioPlayer.src = URL.createObjectURL(blob);
                 }
-                img.src = event.target.result;
+                reader.readAsArrayBuffer(file);
+
+            } else if (file.type.startsWith('image/')) {
+                currentMediaType = 'image';
+                document.getElementById('uploadIcon').innerText = '🖼️';
+                
+                // Show Canvas, Hide Audio Player
+                document.getElementById('audioVisual').style.display = 'none';
+                document.getElementById('audioPlayer').style.display = 'none';
+                document.getElementById('audioPlayer').pause();
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    img.onload = function() {
+                        const maxWidth = document.getElementById('previewContainer').clientWidth - 32;
+                        let scale = 1;
+                        if (img.width > maxWidth) scale = maxWidth / img.width;
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                        canvas.style.display = 'block';
+                        canvas.style.width = (img.width * scale) + 'px';
+                    }
+                    img.src = event.target.result;
+                }
+                reader.readAsDataURL(file);
             }
-            reader.readAsDataURL(file);
         });
 
         function toggleKeyVisibility() {
@@ -226,66 +249,91 @@
         function generateSecureKey() {
             const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
             let key = "";
-            for (let i = 0; i < 16; i++) {
-                key += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            
+            for (let i = 0; i < 16; i++) { key += chars.charAt(Math.floor(Math.random() * chars.length)); }
             const keyInput = document.getElementById('cryptoKey');
-            keyInput.value = key;
-            keyInput.type = "text"; 
-            
+            keyInput.value = key; keyInput.type = "text"; 
             navigator.clipboard.writeText(key).then(() => {
-                alert("🔒 Secure 16-character key generated and copied to your clipboard!\n\nSave this key. You will need to share it with the recipient to decode the image.");
+                alert("🔒 Secure 16-character key generated and copied to your clipboard!");
             });
         }
 
-        function encodeMessage() {
+        // --- UNIVERSAL ENCODE ENGINE (Handles Image, Audio, & Tamper Seals) ---
+        function encodeMedia() {
             let rawMessage = document.getElementById('secretMessage').value;
             let password = document.getElementById('cryptoKey').value;
 
-            if (!rawMessage || !img.src || !img.complete || !password) {
-                alert("ERROR: Missing cover image, data to encode, or encryption key.");
+            if (!rawMessage || !currentMediaType || !password) {
+                alert("ERROR: Missing cover asset, data to encode, or AES key.");
                 return;
             }
 
+            // 1. ENCRYPTION & TAMPER SEAL
             let encryptedMessage = CryptoJS.AES.encrypt(rawMessage, password).toString();
-            let messageToHide = encryptedMessage + '|||END|||'; 
+            let integrityHash = CryptoJS.SHA256(encryptedMessage).toString(); // Generate digital fingerprint
+            
+            // Format: HASH ::: ENCRYPTED_TEXT |||END|||
+            let payloadToHide = integrityHash + ':::' + encryptedMessage + '|||END|||'; 
 
-            let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            let data = imgData.data;
-
+            // Convert entire payload to binary string
             let binaryMessage = '';
-            for (let i = 0; i < messageToHide.length; i++) {
-                binaryMessage += messageToHide.charCodeAt(i).toString(2).padStart(8, '0');
+            for (let i = 0; i < payloadToHide.length; i++) {
+                binaryMessage += payloadToHide.charCodeAt(i).toString(2).padStart(8, '0');
             }
 
             let messageIndex = 0;
-            for (let i = 0; i < data.length; i += 4) {
-                if (messageIndex < binaryMessage.length) {
-                    data[i] = (data[i] & 254) | parseInt(binaryMessage[messageIndex]);
-                    messageIndex++;
-                } else { break; }
+
+            // 2. EMBED IN IMAGE
+            if (currentMediaType === 'image') {
+                let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                let data = imgData.data;
+
+                for (let i = 0; i < data.length; i += 4) {
+                    if (messageIndex < binaryMessage.length) {
+                        data[i] = (data[i] & 254) | parseInt(binaryMessage[messageIndex]);
+                        messageIndex++;
+                    } else { break; }
+                }
+                ctx.putImageData(imgData, 0, 0);
+            } 
+            // 3. EMBED IN AUDIO (WAV)
+            else if (currentMediaType === 'audio') {
+                // Create a copy of the raw audio buffer to modify
+                let modifiedBuffer = rawAudioBuffer.slice(0);
+                let audioData = new Uint8Array(modifiedBuffer);
+
+                // Standard WAV headers are 44 bytes. We start at byte 44 to avoid corrupting the file structure.
+                for (let i = 44; i < audioData.length; i++) {
+                    if (messageIndex < binaryMessage.length) {
+                        audioData[i] = (audioData[i] & 254) | parseInt(binaryMessage[messageIndex]);
+                        messageIndex++;
+                    } else { break; }
+                }
+                
+                // Save the modified audio globally so it can be downloaded
+                modifiedAudioBlob = new Blob([modifiedBuffer], { type: 'audio/wav' });
+                
+                // Update player to play the modified version
+                document.getElementById('audioPlayer').src = URL.createObjectURL(modifiedAudioBlob);
             }
 
-            ctx.putImageData(imgData, 0, 0);
-            
             document.getElementById('downloadBtn').style.display = 'block';
             document.getElementById('mainOutputContainer').style.display = 'none';
             document.getElementById('secretMessage').value = '';
             
-            alert("SUCCESS: Data encrypted with AES and embedded into the image.");
+            alert(`SUCCESS: Payload sealed with SHA-256 and embedded securely into ${currentMediaType.toUpperCase()}.`);
             logActivityToServer('ENCODE');
         }
 
+        // --- UNIVERSAL VERIFY & DECODE ENGINE ---
         function startDecryptionSequence() {
             let password = document.getElementById('cryptoKey').value;
 
-            if (!img.src || !img.complete || canvas.width === 0 || !password) {
-                alert("ERROR: Please load an image and enter the decryption key.");
+            if (!currentMediaType || !password) {
+                alert("ERROR: Please load an asset and enter the decryption key.");
                 return;
             }
 
-            // 1. Prepare Modal UI
+            // Prepare Modal UI
             const modal = document.getElementById('decryptModal');
             const consoleBox = document.getElementById('modalConsole');
             const linesBox = document.getElementById('terminalLines');
@@ -295,126 +343,144 @@
             const closeBtn = document.getElementById('closeModalBtn');
             const mainContainer = document.getElementById('mainOutputContainer');
 
-            linesBox.innerHTML = '';
-            resultArea.innerHTML = '';
-            loadingFill.style.width = '0%';
-            loadingContainer.style.display = 'block';
-            closeBtn.style.display = 'none';
-            mainContainer.style.display = 'none'; // Hide main panel output during animation
+            linesBox.innerHTML = ''; resultArea.innerHTML = ''; loadingFill.style.width = '0%';
+            loadingContainer.style.display = 'block'; closeBtn.style.display = 'none'; mainContainer.style.display = 'none'; 
             
             modal.style.display = 'flex';
-            setTimeout(() => { 
-                modal.style.opacity = '1'; 
-                consoleBox.style.transform = 'translateY(0)';
-            }, 10);
+            setTimeout(() => { modal.style.opacity = '1'; consoleBox.style.transform = 'translateY(0)'; }, 10);
 
-            // 2. Perform Decryption with Optimized Loop
+            // Background Math processing
             let isError = false;
             let finalStatus = "";
             let finalOutput = "";
             let modalBorderStyle = "";
             let mainLabelColor = "";
+            let tamperStatusText = "";
 
-            try {
-                let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                let data = imgData.data;
+            setTimeout(() => {
+                try {
+                    let extractedData = '';
+                    let binaryMessage = '';
 
-                let binaryMessage = '';
-                let extractedData = '';
-
-                // Highly optimized early-exit loop
-                for (let i = 0; i < data.length; i += 4) {
-                    binaryMessage += (data[i] & 1).toString();
-                    
-                    // Process every 8 bits immediately
-                    if (binaryMessage.length === 8) {
-                        extractedData += String.fromCharCode(parseInt(binaryMessage, 2));
-                        binaryMessage = ''; // Reset for next character
-                        
-                        // Stop scanning the image entirely once the end tag is found
-                        if (extractedData.endsWith('|||END|||')) {
-                            extractedData = extractedData.slice(0, -9);
-                            break;
+                    // Extract bits based on media type
+                    if (currentMediaType === 'image') {
+                        let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        let data = imgData.data;
+                        for (let i = 0; i < data.length; i += 4) {
+                            binaryMessage += (data[i] & 1).toString();
+                            if (binaryMessage.length === 8) {
+                                extractedData += String.fromCharCode(parseInt(binaryMessage, 2));
+                                binaryMessage = ''; 
+                                if (extractedData.endsWith('|||END|||')) { extractedData = extractedData.slice(0, -9); break; }
+                            }
                         }
+                    } else if (currentMediaType === 'audio') {
+                        let audioData = new Uint8Array(rawAudioBuffer); // Use the buffer loaded from the file
+                        for (let i = 44; i < audioData.length; i++) {
+                            binaryMessage += (audioData[i] & 1).toString();
+                            if (binaryMessage.length === 8) {
+                                extractedData += String.fromCharCode(parseInt(binaryMessage, 2));
+                                binaryMessage = '';
+                                if (extractedData.endsWith('|||END|||')) { extractedData = extractedData.slice(0, -9); break; }
+                            }
+                        }
+                    }
+
+                    if (!extractedData) throw new Error("NoData");
+
+                    // TAMPER VERIFICATION: Split the hash from the payload
+                    let parts = extractedData.split(':::');
+                    if (parts.length !== 2) throw new Error("Tampered"); // If there is no hash delimiter, file is corrupt
+
+                    let extractedHash = parts[0];
+                    let extractedEncryptedText = parts[1];
+
+                    // Verify Data Integrity
+                    let calculatedHash = CryptoJS.SHA256(extractedEncryptedText).toString();
+                    if (extractedHash !== calculatedHash) throw new Error("Tampered");
+
+                    // DECRYPTION
+                    let bytes = CryptoJS.AES.decrypt(extractedEncryptedText, password);
+                    let originalText = bytes.toString(CryptoJS.enc.Utf8);
+
+                    if (!originalText) throw new Error("BadPassword");
+
+                    // SUCCESS
+                    finalStatus = "DATA INTEGRITY VERIFIED & DECRYPTED";
+                    finalOutput = originalText;
+                    modalBorderStyle = "border-left: 4px solid #10b981;"; // Emerald Green for success
+                    mainLabelColor = "#8E2DE2";
+                    tamperStatusText = "SHA-256 VERIFIED";
+                    
+                    logActivityToServer('DECODE');
+                    
+                } catch (error) {
+                    isError = true;
+                    modalBorderStyle = "border-left: 4px solid #ef4444;"; 
+                    mainLabelColor = "#ef4444";
+                    
+                    if (error.message === "NoData") {
+                        finalStatus = "SCAN COMPLETE: NO ANOMALIES";
+                        finalOutput = "[ NO HIDDEN PAYLOAD DETECTED IN DIGITAL ASSET ]";
+                        tamperStatusText = "CLEAN ASSET";
+                    } else if (error.message === "Tampered") {
+                        finalStatus = "CRITICAL SECURITY ALERT: DATA CORRUPTION";
+                        finalOutput = "[ TAMPER DETECTED: THE SHA-256 HASH OF THIS FILE DOES NOT MATCH. THE DATA HAS BEEN ALTERED OR COMPRESSED. ]";
+                        tamperStatusText = "TAMPER DETECTED";
+                    } else {
+                        finalStatus = "SECURITY ALERT: ACCESS DENIED";
+                        finalOutput = "[ DECRYPTION FAILED. INCORRECT AES KEY. ]";
+                        tamperStatusText = "INVALID KEY";
                     }
                 }
 
-                if (!extractedData) throw new Error("NoData");
+                // Cinematic Animation Sequence
+                const sequence = [
+                    { time: 100, text: `<span class='text-cyan'>> INITIATING ${currentMediaType.toUpperCase()} ASSET SCAN...</span>` },
+                    { time: 600, text: "<span class='text-muted'>> Analyzing LSB matrix for hidden vectors...</span>" },
+                    { time: 1200, text: "<span class='text-muted'>> Extracting payload and digital signature...</span>" },
+                    { time: 1800, text: "<span class='text-muted'>> Verifying SHA-256 Cryptographic Hash...</span>" },
+                    { time: 2400, text: "<span class='text-muted'>> Applying AES-256 decryption algorithm...</span>" }
+                ];
 
-                let bytes = CryptoJS.AES.decrypt(extractedData, password);
-                let originalText = bytes.toString(CryptoJS.enc.Utf8);
+                setTimeout(() => { loadingFill.style.width = '100%'; }, 100);
+                sequence.forEach(step => { setTimeout(() => { linesBox.innerHTML += `<div class="terminal-line">${step.text}</div>`; }, step.time); });
 
-                if (!originalText) throw new Error("BadPassword");
-
-                finalStatus = "DECRYPTION SUCCESSFUL";
-                finalOutput = originalText;
-                modalBorderStyle = "border-left: 4px solid #c084fc;"; 
-                mainLabelColor = "#8E2DE2";
-
-                logActivityToServer('DECODE');
-                
-            } catch (error) {
-                isError = true;
-                modalBorderStyle = "border-left: 4px solid #ef4444;"; 
-                mainLabelColor = "#ef4444";
-                
-                if (error.message === "NoData") {
-                    finalStatus = "SCAN COMPLETE: NO ANOMALIES";
-                    finalOutput = "[ NO HIDDEN PAYLOAD DETECTED IN IMAGE MATRIX ]";
-                } else {
-                    finalStatus = "SECURITY ALERT: ACCESS DENIED";
-                    finalOutput = "[ DECRYPTION FAILED. INCORRECT KEY OR CORRUPT MATRIX. ]";
-                }
-            }
-
-            // 3. Play Cinematic Animation
-            const sequence = [
-                { time: 100, text: "<span class='text-cyan'>> INITIATING ASSET SCAN...</span>" },
-                { time: 600, text: "<span class='text-muted'>> Analyzing LSB pixel matrix for hidden vectors...</span>" },
-                { time: 1400, text: "<span class='text-muted'>> Extracting encrypted payload data...</span>" },
-                { time: 2100, text: "<span class='text-muted'>> Applying AES-256 decryption algorithm...</span>" }
-            ];
-
-            setTimeout(() => { loadingFill.style.width = '100%'; }, 100);
-
-            sequence.forEach(step => {
-                setTimeout(() => { linesBox.innerHTML += `<div class="terminal-line">${step.text}</div>`; }, step.time);
-            });
-
-            setTimeout(() => {
-                loadingContainer.style.display = 'none';
-                let headerColor = isError ? 'text-red' : 'text-purple';
-                
-                // Show in Modal
-                resultArea.innerHTML = `
-                    <div class="terminal-line"><span class='${headerColor}'>>> ${finalStatus}</span></div>
-                    <div class="final-output-box" style="${modalBorderStyle}">${finalOutput}</div>
-                `;
-                closeBtn.style.display = 'block';
-                
-                // Prep main dashboard so it's ready when modal closes
-                const mainLabel = document.getElementById('mainOutputLabel');
-                const mainOutputText = document.getElementById('mainDecodedOutput');
-                
-                mainLabel.innerText = isError ? "SECURITY ALERT:" : "Decrypted Message:";
-                mainLabel.style.color = mainLabelColor;
-                mainContainer.style.borderLeftColor = mainLabelColor;
-                mainOutputText.innerText = finalOutput;
-                mainContainer.style.display = 'block';
-                
-            }, 3000);
+                setTimeout(() => {
+                    loadingContainer.style.display = 'none';
+                    let headerColor = isError ? 'text-red' : 'text-purple';
+                    if (!isError) headerColor = "style='color: #10b981; font-weight: bold;'"; // green success
+                    
+                    resultArea.innerHTML = `
+                        <div class="terminal-line"><span ${headerColor}>>> ${finalStatus}</span></div>
+                        <div class="final-output-box" style="${modalBorderStyle}">${finalOutput}</div>
+                    `;
+                    closeBtn.style.display = 'block';
+                    
+                    // Prep Main Dashboard
+                    const mainLabel = document.getElementById('mainOutputLabel').firstElementChild;
+                    const badge = document.getElementById('tamperBadge');
+                    const mainOutputText = document.getElementById('mainDecodedOutput');
+                    
+                    mainLabel.innerText = isError ? "SECURITY ALERT:" : "Decrypted Payload:";
+                    mainLabel.style.color = mainLabelColor;
+                    
+                    badge.innerText = tamperStatusText;
+                    badge.style.backgroundColor = isError ? "#ef4444" : "#10b981";
+                    
+                    mainContainer.style.borderLeftColor = mainLabelColor;
+                    mainOutputText.innerText = finalOutput;
+                    mainContainer.style.display = 'block';
+                    
+                }, 3300);
+            }, 50); 
         }
 
         function closeModal() {
             const modal = document.getElementById('decryptModal');
             const consoleBox = document.getElementById('modalConsole');
-            
-            modal.style.opacity = '0';
-            consoleBox.style.transform = 'translateY(20px)';
-            
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
+            modal.style.opacity = '0'; consoleBox.style.transform = 'translateY(20px)';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
         }
 
         function resetSession() {
@@ -422,52 +488,50 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             canvas.width = 0; canvas.height = 0; canvas.style.display = 'none';
             
-            document.getElementById('imageUpload').value = '';
-            document.getElementById('fileNameDisplay').innerText = 'Select Cover Image';
+            rawAudioBuffer = null;
+            modifiedAudioBlob = null;
+            currentMediaType = null;
+            document.getElementById('audioPlayer').style.display = 'none';
+            document.getElementById('audioPlayer').pause();
+            document.getElementById('audioVisual').style.display = 'none';
+            
+            document.getElementById('uploadIcon').innerText = '⎘';
+            
+            // THE FIX: Changed 'imageUpload' to 'mediaUpload'
+            document.getElementById('mediaUpload').value = ''; 
+            
+            document.getElementById('fileNameDisplay').innerText = 'Select Cover Asset';
             document.getElementById('fileNameDisplay').style.color = '#0f172a';
             document.getElementById('placeholderText').style.display = 'block';
-            document.getElementById('secretMessage').value = '';
             
+            document.getElementById('secretMessage').value = '';
             const keyInput = document.getElementById('cryptoKey');
-            keyInput.value = '';
-            keyInput.type = 'password';
+            keyInput.value = ''; keyInput.type = 'password';
             
             document.getElementById('downloadBtn').style.display = 'none';
             document.getElementById('mainOutputContainer').style.display = 'none';
             document.getElementById('mainDecodedOutput').innerText = '';
         }
 
-        function downloadImage() {
-            const dataUrl = canvas.toDataURL('image/png');
+        function downloadMedia() {
             const link = document.createElement('a');
-            link.download = 'encoded_image.png';
-            link.href = dataUrl;
+            
+            if (currentMediaType === 'image') {
+                link.download = 'secured_asset.png';
+                link.href = canvas.toDataURL('image/png');
+            } else if (currentMediaType === 'audio') {
+                link.download = 'secured_audio.wav';
+                link.href = URL.createObjectURL(modifiedAudioBlob);
+            }
+
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
 
             setTimeout(() => {
-                alert("Image successfully downloaded. Resetting session...");
+                alert("Asset successfully downloaded. Resetting session...");
                 resetSession();
             }, 300);
-        }
-        // --- PHASE 3: BACKEND AUDIT LOG PING ---
-        async function logActivityToServer(actionType) {
-            const fileName = document.getElementById('fileNameDisplay').innerText;
-            
-            try {
-                await fetch('/api/audit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: actionType,
-                        filename: fileName,
-                        timestamp: new Date().toISOString()
-                    })
-                });
-            } catch (error) {
-                console.error("Backend logging failed. Server might be offline.", error);
-            }
         }
     </script>
 </body>
